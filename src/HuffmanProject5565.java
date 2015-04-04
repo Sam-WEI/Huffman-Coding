@@ -14,21 +14,18 @@ public class HuffmanProject5565 {
 	
 	public static void main(String[] args) {
 //		HashMap<Integer, Integer> freqMap = readFile("liberty.jpg");
-		HashMap<Integer, Integer> freqMap = readFile("test.txt");
+		HashMap<Integer, Integer> freqMap = readFile("easy.txt");
 		int i = 0;
 		for(Entry<Integer, Integer> entry : freqMap.entrySet()){
 //			System.out.println(i + " - " + entry.getKey() + "  :  " + entry.getValue());
-			System.out.format("%d - %c : %d", i, entry.getKey(), entry.getValue()).println();
+			System.out.format("%3d - %c : %d", i, entry.getKey(), entry.getValue()).println();
 			i++;
 		}
 		
 		MinHeap minHeap = new MinHeap(freqMap);
-		Entry<Integer, Integer> min = minHeap.extractMin();
-		while(min != null){
-			System.out.println("MIN = " + min.getValue());
-			min = minHeap.extractMin();
-		}
 		
+		HuffmanTree tree = new HuffmanTree(minHeap);
+		tree.buildHuffmanTree();
 	}
 
 	private static HashMap<Integer, Integer> readFile(String filename){
