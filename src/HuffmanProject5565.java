@@ -13,11 +13,22 @@ public class HuffmanProject5565 {
 	static final int KEY_BYTE_NUM = 2;
 	
 	public static void main(String[] args) {
-		HashMap<Integer, Integer> freqMap = readFile("liberty.jpg");
+//		HashMap<Integer, Integer> freqMap = readFile("liberty.jpg");
+		HashMap<Integer, Integer> freqMap = readFile("test.txt");
 		int i = 0;
 		for(Entry<Integer, Integer> entry : freqMap.entrySet()){
-			System.out.println(i ++ + " - " + entry.getKey() + "  :  " + entry.getValue());
+//			System.out.println(i + " - " + entry.getKey() + "  :  " + entry.getValue());
+			System.out.format("%d - %c : %d", i, entry.getKey(), entry.getValue()).println();
+			i++;
 		}
+		
+		MinHeap minHeap = new MinHeap(freqMap);
+		Entry<Integer, Integer> min = minHeap.extractMin();
+		while(min != null){
+			System.out.println("MIN = " + min.getValue());
+			min = minHeap.extractMin();
+		}
+		
 	}
 
 	private static HashMap<Integer, Integer> readFile(String filename){
