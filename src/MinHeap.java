@@ -8,15 +8,17 @@ public class MinHeap {
 	
 	private HashMap<Integer, Integer> freqMap;
 	private ArrayList<HuffmanNode> tree;
+	final int KEY_COUNT;
+	
 	public MinHeap(HashMap<Integer, Integer> freqMap) {
 		this.freqMap = freqMap;
-		tree = new ArrayList<>(freqMap.size());
+		KEY_COUNT = freqMap.size();
+		tree = new ArrayList<>(KEY_COUNT);
 		for(Entry<Integer, Integer> e : freqMap.entrySet()){
 			tree.add(new HuffmanNode(e));
 		}
 		
 		buildMinHeapTree();
-		
 	}
 	
 	private void buildMinHeapTree(){
@@ -35,7 +37,7 @@ public class MinHeap {
 				}
 			}	
 		}while(onceMore);
-		printTree();
+//		printTree();
 	}
 	
 	public void insertIntoMinHeap(HuffmanNode node){

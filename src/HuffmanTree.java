@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map.Entry;
 
 
@@ -6,10 +7,12 @@ public class HuffmanTree {
 	
 	private final MinHeap minHeap;
 	private ArrayList<HuffmanNode> nodes;
+	private HashMap<Integer, String> codes;
 	
 	public HuffmanTree(MinHeap minHeap){
 		this.minHeap = minHeap;
 		nodes = new ArrayList<>();
+		codes = new HashMap<>(minHeap.KEY_COUNT);
 	}
 	
 	public void buildHuffmanTree(){
@@ -36,26 +39,31 @@ public class HuffmanTree {
 			left = minHeap.extractMin();
 			right = minHeap.extractMin();
 			
-			System.out.println("buiding....");
 		}
 		
 		generateHuffmanCode(parent);
-		printHuffmanNode();
 		
+//		printHuffmanNode();
+		printHuffmanCodes();
 	}
 	
 	private void generateHuffmanCode(HuffmanNode n){
 		if(n.left != null){
 			n.left.code = n.code + "0";
-			
 			generateHuffmanCode(n.left);
 		}
 		if(n.right != null){
 			n.right.code = n.code + "1";
-			System.out.println("!!!!!!!! " + n.left.code);
 			generateHuffmanCode(n.right);
 		}
+		if(n.left == null && n.right == null){
+			codes.put(n.key, n.code);
+		}
+	}
+	
+	public HashMap<Integer, String> getHCodeMap(){
 		
+		return codes;
 	}
 	
 	private void printHuffmanNode(){
@@ -87,6 +95,12 @@ public class HuffmanTree {
 				System.out.print("null");
 			}
 			System.out.print(")\n");
+		}
+	}
+	
+	private void printHuffmanCodes(){
+		for(Entry<Integer, String> entry : codes.entrySet()){
+			System.out.format("%c : %s\n", entry.getKey(), entry.getValue());
 		}
 	}
 	
