@@ -4,7 +4,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -17,21 +16,18 @@ public class HuffmanProject5565 {
 	
 	private static final String HUF_EXTENSION = ".huf";
 	static final int KEY_BYTE_NUM = 2;
-	private static final int BUFFER_NUM = 30;
-	
+	private static final int BUFFER_NUM = 20;
+	private static long startTime;
 	
 	public static void main(String[] args) {
 		
-//		int i = 0;
-//		for(Entry<Integer, Integer> entry : freqMap.entrySet()){
-//			System.out.format("%3d - %c : %d", i, entry.getKey(), entry.getValue()).println();
-//			i++;
-//		}
-		String filename = "test.txt";
+//		String filename = "long.txt";
+//		String filename = "test.txt";
 //		String filename = "liberty.jpg";
 //		String filename = "easy.txt";
-//		String filename = "project1 610s15.pdf";
+		String filename = "project1 610s15.pdf";
 		
+		startTime = System.currentTimeMillis();
 		encodeFile(filename);
 		decodeFile(filename + HUF_EXTENSION);
 		
@@ -43,8 +39,6 @@ public class HuffmanProject5565 {
 		MinHeap minHeap = new MinHeap(freqMap);
 		
 		HuffmanTree tree = new HuffmanTree(minHeap);
-		tree.buildHuffmanTree();
-		
 		HashMap<Integer, String> hCodesMap = tree.getHCodeMap();
 		
 		final int BYTE_NEEDED_FOR_HCODE = getByteNeededForHCodes(hCodesMap);
@@ -56,23 +50,23 @@ public class HuffmanProject5565 {
 		try {
 			bos = new BufferedOutputStream(new FileOutputStream(filename + ".huf"));
 
-			//data structure is: {byte number of all hcode|1st code's key|1st code's bit number N|1st code's code[need ceil(N/8) bytes]|2nd code's key|...}
+			//data structure of the part of hcode map is: {byte number of all hcode|1st code's key|1st code's bit number N|1st code's code[need ceil(N/8) bytes]|2nd code's key|...}
 			//use the first 2 bytes to save the byte number of hcode
 			bos.write(BYTE_NEEDED_FOR_HCODE>>8);
 			bos.write(BYTE_NEEDED_FOR_HCODE);
-			/* Suppose there are 256 (at most) huffman codes, each needs 1 byte for key, 
+			/* Suppose there are 256 (at most) huffman codes, each of which needs 1 byte for key, 
 			 * 1 byte for bit count, and 2 bytes for code. Only 4*256=1024 bytes are needed.
 			 * So 2 bytes(=65536) for storing this count is enough.*/
 			
 			String codeInStr = null;
 			
-			//write huffman code maps
+			/*-----------write huffman code maps---------------*/
+			//data structure of the part of encoded file is: 
 			int byteUsed = 0;
 			for(Entry<Integer, String> entry : hCodesMap.entrySet()){
 				bos.write(entry.getKey());
 				byteUsed++;
 				codeInStr = entry.getValue();
-//				codeInStr="000000000"+codeInStr;
 				
 				int codeInInt = getIntFromBinaryString(codeInStr, false);//code in int
 				int codeBitsCount = codeInStr.length();
@@ -96,13 +90,11 @@ public class HuffmanProject5565 {
 						System.out.println("2+>>>> " + codeInStr + "  " + (codeInInt));*/
 					}
 				}
-				
 				byteUsed++;
-				
 			}
 			System.out.println("~~~~byte used for hcode maps " + byteUsed);
 			
-			//encode file
+			/*---------------encode file---------------*/
 			bis = new BufferedInputStream(new FileInputStream(filename));
 			int b = 0;
 			StringBuilder sb = new StringBuilder();
@@ -110,12 +102,20 @@ public class HuffmanProject5565 {
 				sb.append(hCodesMap.get(b));//TODO need to be memory optimized
 				
 			}
+			
+			//first write total bit count, which needs 8 bytes. 4 bytes are probably not enough since 32 bits have an upper limit 512M.
+			final long bitCount = tree.getBitCount();
+			System.out.println("bitCount written: " + bitCount);
+			for(int i = 0; i < 8; i++){
+				bos.write((int) (bitCount >> (7 - i) * 8));
+			}
+			
 			final int totalBits = sb.length();
+			
 			int pos = 0;
 			String oneByteStr = null;
 			while(pos < totalBits){
 				oneByteStr = sb.substring(pos, pos + Math.min(totalBits - pos, 8));
-				System.out.print(oneByteStr+"|");
 				int oneByte = getIntFromBinaryString(oneByteStr, true);
 				bos.write(oneByte);
 				pos += 8;
@@ -161,6 +161,7 @@ public class HuffmanProject5565 {
 		HashMap<Integer, String> hCodesMap = new HashMap<>();
 		String decodedFilename = filename + "." + getOriginalFileExtension(filename);
 		
+		long bitCountOfFile = 0;
 		
 		BufferedInputStream bis = null;
 		BufferedOutputStream bos = null;
@@ -169,83 +170,97 @@ public class HuffmanProject5565 {
 			bis = new BufferedInputStream(new FileInputStream(filename));
 			bos = new BufferedOutputStream(new FileOutputStream(decodedFilename));
 			
-			int byteCountForHCodes = (bis.read() << 8) + bis.read();
+			final int byteCountForHCodes = (bis.read() << 8) + bis.read();
 			System.out.println("=== byte count for h code is " + byteCountForHCodes);
 			
 			int shortestCodeLen = Integer.MAX_VALUE;
-			StringBuilder bufferString = new StringBuilder();
 			
 			int byteRead = 0;//byte count that has already read
 			int b;
-			while((b = bis.read()) != -1){
+			//----------start to read hcode map-------------
+			while(byteRead < byteCountForHCodes){
+				b = bis.read();
 				byteRead++;
-				if(byteRead <= byteCountForHCodes){
-					final int KEY = b;
-					String codeInStrTemp = null;
-					final int CODE_BIT_COUNT = bis.read();
+				final int KEY = b;
+				String codeInStrTemp = null;
+				final int CODE_BIT_COUNT = bis.read();
+				byteRead++;
+				
+				int codeInInt = 0;
+				final int CODE_BYTE_COUNT = (int)Math.ceil(CODE_BIT_COUNT / 8f);
+				for(int i = 0; i < CODE_BYTE_COUNT; i++){
+					codeInInt += (bis.read()<<(i*8)); //remember that I wrote the bytes of this code in reverse order. So read likewise.
 					byteRead++;
-					
-					int codeInInt = 0;
-					final int CODE_BYTE_COUNT = (int)Math.ceil(CODE_BIT_COUNT / 8f);
-					for(int i = 0; i < CODE_BYTE_COUNT; i++){
-						codeInInt += (bis.read()<<(i*8)); //remember that I wrote the bytes of this code in reverse order. So read likewise.
-						byteRead++;
-					}
-					
-					codeInStrTemp = Integer.toBinaryString(codeInInt);
-					StringBuilder codeInStr = new StringBuilder();
-					for(int j = 0; j < CODE_BIT_COUNT - codeInStrTemp.length(); j++){
-						codeInStr.append("0");
-					}
-					codeInStr.append(codeInStrTemp);
-					
-					shortestCodeLen = Math.min(shortestCodeLen, codeInStr.length());//in order to faster the later comparison when decoding
-					
-					hCodesMap.put(KEY, codeInStr.toString());
-				} else {
-					//begin to decode
-					if(true||bufferString.length() < BUFFER_NUM){
-						bufferString.append(get8BitsBinaryStrFromInt(b));
-					} else {
-						while(bufferString.length() > 0){
-							int cutPoint = 0;
-							for(int i = shortestCodeLen; i < bufferString.length(); i++){
-								String strToCompare = bufferString.substring(0, i);
-								for(Entry<Integer, String> entry : hCodesMap.entrySet()){
-									if(strToCompare.equals(entry.getValue())){
-										bos.write(entry.getKey());
-										break;
-									}
-								}
-								cutPoint = i;
-								break;
-							}
-							bufferString = new StringBuilder(bufferString.substring(cutPoint));
-						}
-					}
 				}
 				
-				
-				
-			}
-			int startIndex = 0;
-			int endIndex = shortestCodeLen;
-			System.out.print(bufferString+"|");
-			while(endIndex < bufferString.length()){
-				String strToCompare = bufferString.substring(startIndex, endIndex);
-//				System.out.println("~~"+strToCompare+ "  " + hCodesMap);
-				for(Entry<Integer, String> entry : hCodesMap.entrySet()){
-					if(strToCompare.equals(entry.getValue())){
-						bos.write(entry.getKey());
-						startIndex = endIndex;
-						endIndex = startIndex + shortestCodeLen - 1;//-1 is because of the later endIndex++
-						System.out.println("got "+strToCompare+"  "+entry.getKey());
-						break;
-					}
+				codeInStrTemp = Integer.toBinaryString(codeInInt);
+				StringBuilder codeInStr = new StringBuilder();
+				for(int j = 0; j < CODE_BIT_COUNT - codeInStrTemp.length(); j++){
+					codeInStr.append("0");
 				}
-				endIndex++;
+				codeInStr.append(codeInStrTemp);
+				
+				shortestCodeLen = Math.min(shortestCodeLen, codeInStr.length());//in order to faster the later comparison when decoding
+				
+				hCodesMap.put(KEY, codeInStr.toString());
 			}
 			
+			System.out.println("just read hcode map: " + hCodesMap);
+			
+			
+			//-------------start to read 8 bytes for bit count-------------
+			for(byteRead = 0; byteRead < 8; byteRead++){
+				bitCountOfFile += (bis.read() << (7 - byteRead) * 8);
+			}
+			System.out.println("just read bit count: " + bitCountOfFile);
+			
+			
+			//-------------start to decode file-------------
+			StringBuilder bufferString = new StringBuilder();
+			boolean bufferTooShort = false;
+			int bitRead = 0;
+			b = 0;
+			while(bitRead < bitCountOfFile){
+				if((bufferString.length() < BUFFER_NUM && bufferTooShort) && b != -1){
+					b = bis.read();
+//					bitRead += 8;
+					if(b != -1){
+						bufferString.append(get8BitsBinaryStrFromInt(b));
+					}
+					System.out.print("reading --- " + bufferString+"|" + bufferString.length() + "\n");
+				} else {
+					int startIndex = 0;
+					int endIndex = shortestCodeLen;
+//					System.out.print("else --- " + bufferString+"|" + bufferString.length() + "\n");
+					bufferTooShort = false;
+					while(bitRead < bitCountOfFile && endIndex <= bufferString.length() && !bufferTooShort){
+						String strToCompare = bufferString.substring(startIndex, endIndex);
+						boolean matched = false;
+						for(Entry<Integer, String> entry : hCodesMap.entrySet()){
+							if(strToCompare.equals(entry.getValue())){
+								bos.write(entry.getKey());
+								bitRead += entry.getValue().length();
+								System.out.println("bitRead " + bitRead + "  " + strToCompare);
+								startIndex = endIndex;
+								endIndex = startIndex + shortestCodeLen;
+								
+								matched = true;
+								break;
+							}
+						}
+						if(!matched){
+							endIndex++;
+						}
+						
+						if(endIndex > bufferString.length()){
+							bufferString = new StringBuilder(bufferString.substring(startIndex));//put the remaining string into new string
+							bufferTooShort = true;
+						}
+					}
+					bufferTooShort = true;
+				}
+				
+			}
 			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -267,6 +282,8 @@ public class HuffmanProject5565 {
 				}
 			}
 		}
+		
+		System.out.println("time spent: " + ((System.currentTimeMillis() - startTime)));
 	}
 	
 	private static String getOriginalFileExtension(String encodedFilename){
@@ -328,7 +345,6 @@ public class HuffmanProject5565 {
 				} else {
 					freqMap.put(b, value + 1);
 				}
-				
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

@@ -30,7 +30,7 @@ public class MinHeap {
 				int prtIdx = (childIdx - 1) / 2;//same as Math.floor()
 				HuffmanNode childEntry = tree.get(childIdx);
 				HuffmanNode prtEntry = tree.get(prtIdx);
-				if(childEntry.value < prtEntry.value){
+				if(childEntry.frequency < prtEntry.frequency){
 					tree.set(childIdx, prtEntry);
 					tree.set(prtIdx, childEntry);
 					onceMore = true;
@@ -69,7 +69,7 @@ public class MinHeap {
 			final int nodeNumInThisLevel = (int) Math.pow(2, lvl);
 			int lineOffset = (int) (Math.pow(2, levelNum - lvl - 1)); 
 			
-			System.out.format("%4d", tree.get(i).value).print("");
+			System.out.format("%4d", tree.get(i).frequency).print("");
 			
 			
 			int spaceAfterEachNode = 2 * lineOffset + 1;

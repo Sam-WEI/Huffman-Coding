@@ -5,7 +5,7 @@ import java.util.Map.Entry;
 public class HuffmanNode implements Cloneable{
 	String code = "";
 	int key;
-	int value;
+	int frequency;
 	int index = -1;
 	HuffmanNode left;
 	HuffmanNode right;
@@ -15,7 +15,7 @@ public class HuffmanNode implements Cloneable{
 
 	public HuffmanNode(Entry<Integer, Integer> entry){
 		key = entry.getKey();
-		value = entry.getValue();
+		frequency = entry.getValue();
 	}
 	
 //	@Override
@@ -23,7 +23,7 @@ public class HuffmanNode implements Cloneable{
 //		HuffmanNode clone = new HuffmanNode();
 //		clone.code = code;
 //		clone.key = key;
-//		clone.value = value;
+//		clone.value = frequency;
 //		clone.index = index;
 //		clone.leftChild = left.clone();
 //		clone.rightChild = right.clone();
