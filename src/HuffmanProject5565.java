@@ -49,13 +49,15 @@ public class HuffmanProject5565 {
 		
 		final int BYTE_NEEDED_FOR_HCODE = getByteNeededForHCodes(hCodesMap);
 		
-		System.out.println("~~~~~~~bytes needed " + BYTE_NEEDED_FOR_HCODE);
+		System.out.println("~~~~~byte needed for hcode maps " + BYTE_NEEDED_FOR_HCODE);
 
 		BufferedInputStream bis = null;
 		BufferedOutputStream bos = null;
 		try {
 			bos = new BufferedOutputStream(new FileOutputStream(filename + ".huf"));
-			
+
+			//data structure is: {byte number of all hcode|1st code's key|1st code's bit number N|1st code's code[need ceil(N/8) bytes]|2nd code's key|...}
+			//use the first 2 bytes to save the byte number of hcode
 			bos.write(BYTE_NEEDED_FOR_HCODE>>8);
 			bos.write(BYTE_NEEDED_FOR_HCODE);
 			/* Suppose there are 256 (at most) huffman codes, each needs 1 byte for key, 
@@ -63,14 +65,16 @@ public class HuffmanProject5565 {
 			 * So 2 bytes(=65536) for storing this count is enough.*/
 			
 			String codeInStr = null;
-			//write huffman codes
+			
+			//write huffman code maps
 			int byteUsed = 0;
 			for(Entry<Integer, String> entry : hCodesMap.entrySet()){
 				bos.write(entry.getKey());
 				byteUsed++;
 				codeInStr = entry.getValue();
 //				codeInStr="000000000"+codeInStr;
-				int codeInInt = getIntFromBinaryString(codeInStr);//code in int
+				
+				int codeInInt = getIntFromBinaryString(codeInStr, false);//code in int
 				int codeBitsCount = codeInStr.length();
 				final int BYTE_COUNT = (int) Math.ceil(codeBitsCount / 8f);
 				
@@ -96,10 +100,9 @@ public class HuffmanProject5565 {
 				byteUsed++;
 				
 			}
-			System.out.println("~~~~byte used " + byteUsed);
-			//in order to seperate codes and encoding
+			System.out.println("~~~~byte used for hcode maps " + byteUsed);
 			
-			//encode
+			//encode file
 			bis = new BufferedInputStream(new FileInputStream(filename));
 			int b = 0;
 			StringBuilder sb = new StringBuilder();
@@ -112,7 +115,8 @@ public class HuffmanProject5565 {
 			String oneByteStr = null;
 			while(pos < totalBits){
 				oneByteStr = sb.substring(pos, pos + Math.min(totalBits - pos, 8));
-				int oneByte = getIntFromBinaryString(oneByteStr);
+				System.out.print(oneByteStr+"|");
+				int oneByte = getIntFromBinaryString(oneByteStr, true);
 				bos.write(oneByte);
 				pos += 8;
 			}
@@ -226,14 +230,16 @@ public class HuffmanProject5565 {
 			}
 			int startIndex = 0;
 			int endIndex = shortestCodeLen;
+			System.out.print(bufferString+"|");
 			while(endIndex < bufferString.length()){
 				String strToCompare = bufferString.substring(startIndex, endIndex);
+//				System.out.println("~~"+strToCompare+ "  " + hCodesMap);
 				for(Entry<Integer, String> entry : hCodesMap.entrySet()){
 					if(strToCompare.equals(entry.getValue())){
 						bos.write(entry.getKey());
 						startIndex = endIndex;
 						endIndex = startIndex + shortestCodeLen - 1;//-1 is because of the later endIndex++
-						endIndex--;
+						System.out.println("got "+strToCompare+"  "+entry.getKey());
 						break;
 					}
 				}
@@ -278,11 +284,20 @@ public class HuffmanProject5565 {
 			sb.append("0");
 		}
 		sb.append(tmp);
+		
 		return sb.toString();
 	}
 	
-	private static int getIntFromBinaryString(String str){
+	/**
+	 * 
+	 * @param str
+	 * @param moveBitsToLeft If true, binary string 111 will be converted to 11100000, which is useful when decoding the last byte of file.
+	 * <br/>If false, binary string 111 will be converted to 00000111, which should be used when writing hcode maps.
+	 * @return
+	 */
+	private static int getIntFromBinaryString(String str, boolean moveBitsToLeft){
 		final int len = str.length();
+		
 		int i = 0;
 		int result = 0;
 		char c;
@@ -292,6 +307,11 @@ public class HuffmanProject5565 {
 			result += c - '0';
 			i++;
 		}
+		
+		if(moveBitsToLeft){
+			result <<= 8 - len;//when encoding file, if len < 8, this byte must be the last one. We must put all the bits to the very left or it won't be decoded correctly.
+		}
+		
 		return result;
 	}
 	
