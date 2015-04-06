@@ -2,25 +2,25 @@ import java.util.Map.Entry;
 
 
 
-public class HuffmanNode implements Cloneable{
+public class HuffmanNode5565 implements Cloneable{
 	String code = "";
 	int key;
 	int frequency;
 	int index = -1;
-	HuffmanNode left;
-	HuffmanNode right;
-	HuffmanNode parent;
+	HuffmanNode5565 left;
+	HuffmanNode5565 right;
+	HuffmanNode5565 parent;
 	
-	public HuffmanNode() { }
+	public HuffmanNode5565() { }
 
-	public HuffmanNode(Entry<Integer, Integer> entry){
+	public HuffmanNode5565(Entry<Integer, Integer> entry){
 		key = entry.getKey();
 		frequency = entry.getValue();
 	}
 	
 //	@Override
-//	protected HuffmanNode clone() {
-//		HuffmanNode clone = new HuffmanNode();
+//	protected HuffmanNode5565 clone() {
+//		HuffmanNode5565 clone = new HuffmanNode5565();
 //		clone.code = code;
 //		clone.key = key;
 //		clone.value = frequency;

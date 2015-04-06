@@ -21,11 +21,13 @@ public class HuffmanProject5565 {
 	
 	public static void main(String[] args) {
 		
-//		String filename = "long.txt";
+		String filename = "long.txt";
 //		String filename = "test.txt";
-//		String filename = "liberty.jpg";
+//		String filename = "cf_NJIT_Career_Fair_Directory.pdf";
 //		String filename = "easy.txt";
-		String filename = "project1 610s15.pdf";
+//		String filename = "project1 610s15.pdf";
+		
+//		String filename = "cf_NJIT_Career_Fair_Directory.pdf";
 		
 		startTime = System.currentTimeMillis();
 		encodeFile(filename);
@@ -36,9 +38,9 @@ public class HuffmanProject5565 {
 
 	private static void encodeFile(String filename){
 		HashMap<Integer, Integer> freqMap = readFrequenciesFromFile(filename);
-		MinHeap minHeap = new MinHeap(freqMap);
+		MinHeap5565 minHeap = new MinHeap5565(freqMap);
 		
-		HuffmanTree tree = new HuffmanTree(minHeap);
+		HuffmanTree5565 tree = new HuffmanTree5565(minHeap);
 		HashMap<Integer, String> hCodesMap = tree.getHCodeMap();
 		
 		final int BYTE_NEEDED_FOR_HCODE = getByteNeededForHCodes(hCodesMap);
@@ -79,9 +81,8 @@ public class HuffmanProject5565 {
 					byteUsed++;
 				} else {
 					for(int i = 0; i < BYTE_COUNT; i++){
-						bos.write(codeInInt);
+						bos.write(codeInInt >> (8 * i));//NOTE that I'm writing the bytes in reverse order, which means for code 1111111100000000 I first write 00000000 then 11111111
 						byteUsed++;
-						codeInInt >>= (8 * (i+1));//NOTE that I'm writing the bytes in reverse order, which means for code 1111111100000000 I first write 00000000 then 11111111
 						
 						/*if(codeInInt == 0){
 							//if the prior bytes are 0, then we don't need to write it. Just go to write bit count.
@@ -96,19 +97,63 @@ public class HuffmanProject5565 {
 			
 			/*---------------encode file---------------*/
 			bis = new BufferedInputStream(new FileInputStream(filename));
+			
+			//first write total bit count, which needs 8 bytes. 4 bytes are probably not enough since 32 bits have an upper limit 512M.
+			final long totalBitCount = tree.getTotalBitCount();
+			System.out.println("bitCount written: " + totalBitCount);
+			for(int i = 0; i < 8; i++){
+				bos.write((int) (totalBitCount >> (7 - i) * 8));
+			}
+			
 			int b = 0;
 			StringBuilder sb = new StringBuilder();
-			while((b = bis.read()) != -1){
+			
+			final int bufferSize = 8 * 8;
+			boolean bufferTooShort = true;
+			int bitWritten = 0;
+			int bitRead = 0;
+			String oneByteStr = null;
+			while(bitWritten < totalBitCount){
+				if(bufferTooShort && sb.length() < bufferSize && b != -1){
+					if((b = bis.read()) != -1){
+						String code = hCodesMap.get(b);
+						sb.append(code);
+						bitRead += code.length();
+					}
+				} else {
+					bufferTooShort = false;
+					int pos = 0;
+					final int len = sb.length();
+//					System.out.println("else");
+					while(bitWritten <= bitRead){
+						int nextLen = Math.min(len - pos, 8);
+						if(nextLen == 8 || (nextLen < 8 && bitWritten + nextLen == totalBitCount && nextLen != 0)){
+							//if remaining at least one byte or reaching the end
+							oneByteStr = sb.substring(pos, pos + nextLen);
+							bitWritten += nextLen;
+							
+							int oneByte = getIntFromBinaryString(oneByteStr, true);
+							bos.write(oneByte);
+							pos += nextLen;
+						} else {
+							sb = new StringBuilder(sb.substring(pos));
+							bufferTooShort = true;
+							break;
+						}
+						
+//						if(pos >= len){
+//							sb = new StringBuilder();
+//							bufferTooShort = true;
+//						}
+					}
+				}
+			}
+			
+			/*while((b = bis.read()) != -1){
 				sb.append(hCodesMap.get(b));//TODO need to be memory optimized
 				
 			}
 			
-			//first write total bit count, which needs 8 bytes. 4 bytes are probably not enough since 32 bits have an upper limit 512M.
-			final long bitCount = tree.getBitCount();
-			System.out.println("bitCount written: " + bitCount);
-			for(int i = 0; i < 8; i++){
-				bos.write((int) (bitCount >> (7 - i) * 8));
-			}
 			
 			final int totalBits = sb.length();
 			
@@ -119,8 +164,7 @@ public class HuffmanProject5565 {
 				int oneByte = getIntFromBinaryString(oneByteStr, true);
 				bos.write(oneByte);
 				pos += 8;
-			}
-			
+			}*/
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -171,6 +215,7 @@ public class HuffmanProject5565 {
 			bos = new BufferedOutputStream(new FileOutputStream(decodedFilename));
 			
 			final int byteCountForHCodes = (bis.read() << 8) + bis.read();
+			System.out.println("\n\nDecoding starts...");
 			System.out.println("=== byte count for h code is " + byteCountForHCodes);
 			
 			int shortestCodeLen = Integer.MAX_VALUE;
@@ -223,11 +268,11 @@ public class HuffmanProject5565 {
 			while(bitRead < bitCountOfFile){
 				if((bufferString.length() < BUFFER_NUM && bufferTooShort) && b != -1){
 					b = bis.read();
-//					bitRead += 8;
+
 					if(b != -1){
 						bufferString.append(get8BitsBinaryStrFromInt(b));
 					}
-					System.out.print("reading --- " + bufferString+"|" + bufferString.length() + "\n");
+//					System.out.print("reading --- " + bufferString+"|" + bufferString.length() + "\n");
 				} else {
 					int startIndex = 0;
 					int endIndex = shortestCodeLen;
@@ -236,11 +281,12 @@ public class HuffmanProject5565 {
 					while(bitRead < bitCountOfFile && endIndex <= bufferString.length() && !bufferTooShort){
 						String strToCompare = bufferString.substring(startIndex, endIndex);
 						boolean matched = false;
+//						System.out.println("else's while");
 						for(Entry<Integer, String> entry : hCodesMap.entrySet()){
 							if(strToCompare.equals(entry.getValue())){
 								bos.write(entry.getKey());
 								bitRead += entry.getValue().length();
-								System.out.println("bitRead " + bitRead + "  " + strToCompare);
+//								System.out.println("bitRead " + bitRead + "  " + strToCompare);
 								startIndex = endIndex;
 								endIndex = startIndex + shortestCodeLen;
 								
@@ -283,7 +329,7 @@ public class HuffmanProject5565 {
 			}
 		}
 		
-		System.out.println("time spent: " + ((System.currentTimeMillis() - startTime)));
+		System.out.println("Decoding finished. Time spent: " + ((System.currentTimeMillis() - startTime)));
 	}
 	
 	private static String getOriginalFileExtension(String encodedFilename){
