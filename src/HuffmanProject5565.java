@@ -18,14 +18,18 @@ public class HuffmanProject5565 {
 	static final int KEY_BYTE_NUM = 2;
 	private static final int BUFFER_NUM = 20;
 	private static long startTime;
+	private static final int ONE_MEGABYTE = 1 * 1024 * 1024 * 8;//in bit
+	
 	
 	public static void main(String[] args) {
 		
-		String filename = "long.txt";
+		String filename = "liberty.jpg";
 //		String filename = "test.txt";
 //		String filename = "cf_NJIT_Career_Fair_Directory.pdf";
 //		String filename = "easy.txt";
 //		String filename = "project1 610s15.pdf";
+//		String filename = "111.pdf";
+		
 		
 //		String filename = "cf_NJIT_Career_Fair_Directory.pdf";
 		
@@ -265,6 +269,9 @@ public class HuffmanProject5565 {
 			boolean bufferTooShort = false;
 			int bitRead = 0;
 			b = 0;
+			int mbRead = -1;
+			final float totalMBOfFile = (float)bitCountOfFile / ONE_MEGABYTE;
+			
 			while(bitRead < bitCountOfFile){
 				if((bufferString.length() < BUFFER_NUM && bufferTooShort) && b != -1){
 					b = bis.read();
@@ -287,6 +294,11 @@ public class HuffmanProject5565 {
 								bos.write(entry.getKey());
 								bitRead += entry.getValue().length();
 //								System.out.println("bitRead " + bitRead + "  " + strToCompare);
+								if(bitRead / ONE_MEGABYTE != mbRead){
+									mbRead = bitRead / ONE_MEGABYTE;
+									System.out.printf("%d MB/%.2f MB have been read...Time spent: %d\n", mbRead, totalMBOfFile, (System.currentTimeMillis() - startTime));
+								}
+								
 								startIndex = endIndex;
 								endIndex = startIndex + shortestCodeLen;
 								
