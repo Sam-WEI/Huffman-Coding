@@ -25,18 +25,14 @@ public class HuffmanProject5565 {
 		
 		String filename = "liberty.jpg";
 //		String filename = "test.txt";
-//		String filename = "cf_NJIT_Career_Fair_Directory.pdf";
 //		String filename = "easy.txt";
 //		String filename = "project1 610s15.pdf";
 //		String filename = "111.pdf";
 		
 		
-//		String filename = "cf_NJIT_Career_Fair_Directory.pdf";
-		
 		startTime = System.currentTimeMillis();
 		encodeFile(filename);
 		decodeFile(filename + HUF_EXTENSION);
-		
 		
 	}
 
@@ -144,31 +140,9 @@ public class HuffmanProject5565 {
 							bufferTooShort = true;
 							break;
 						}
-						
-//						if(pos >= len){
-//							sb = new StringBuilder();
-//							bufferTooShort = true;
-//						}
 					}
 				}
 			}
-			
-			/*while((b = bis.read()) != -1){
-				sb.append(hCodesMap.get(b));//TODO need to be memory optimized
-				
-			}
-			
-			
-			final int totalBits = sb.length();
-			
-			int pos = 0;
-			String oneByteStr = null;
-			while(pos < totalBits){
-				oneByteStr = sb.substring(pos, pos + Math.min(totalBits - pos, 8));
-				int oneByte = getIntFromBinaryString(oneByteStr, true);
-				bos.write(oneByte);
-				pos += 8;
-			}*/
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -296,7 +270,7 @@ public class HuffmanProject5565 {
 //								System.out.println("bitRead " + bitRead + "  " + strToCompare);
 								if(bitRead / ONE_MEGABYTE != mbRead){
 									mbRead = bitRead / ONE_MEGABYTE;
-									System.out.printf("%d MB/%.2f MB have been read...Time spent: %d\n", mbRead, totalMBOfFile, (System.currentTimeMillis() - startTime));
+									System.out.printf("%d MB/%.2f MB have been decoded...Time spent: %d\n", mbRead, totalMBOfFile, (System.currentTimeMillis() - startTime));
 								}
 								
 								startIndex = endIndex;

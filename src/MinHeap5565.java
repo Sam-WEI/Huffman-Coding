@@ -3,7 +3,11 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 
-
+/**
+ * 
+ * @author Shengkun Wei
+ *
+ */
 public class MinHeap5565 {
 	
 	private HashMap<Integer, Integer> freqMap;

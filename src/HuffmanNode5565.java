@@ -1,7 +1,11 @@
 import java.util.Map.Entry;
 
 
-
+/**
+ * 
+ * @author Shengkun Wei
+ *
+ */
 public class HuffmanNode5565 implements Cloneable{
 	String code = "";
 	int key;
