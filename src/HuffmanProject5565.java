@@ -23,11 +23,11 @@ public class HuffmanProject5565 {
 	
 	public static void main(String[] args) {
 		
-//		String filename = "liberty.jpg";
+		String filename = "liberty.jpg";
 //		String filename = "test.txt";
 //		String filename = "easy.txt";
 //		String filename = "project1 610s15.pdf";
-		String filename = "long.txt";
+//		String filename = "long.txt";
 		
 		
 		startTime = System.currentTimeMillis();
@@ -275,7 +275,8 @@ public class HuffmanProject5565 {
 //								System.out.println("bitRead " + bitRead + "  " + strToCompare);
 								if(bitRead / ONE_MEGABYTE != mbRead){
 									mbRead = bitRead / ONE_MEGABYTE;
-									System.out.printf("%d MB/%.2f MB have been decoded...Time spent: %d\n", mbRead, totalMBOfFile, (System.currentTimeMillis() - startTime));
+									System.out.printf("%d MB/%.2f MB have been decoded... ", mbRead, totalMBOfFile);
+									printCurrentTimeSpent();
 								}
 								
 								startIndex = endIndex;
@@ -319,6 +320,7 @@ public class HuffmanProject5565 {
 				}
 			}
 		}
+		System.out.print("Decoding finished. ");
 		printCurrentTimeSpent();
 		
 	}
