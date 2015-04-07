@@ -153,22 +153,7 @@ public class HuffmanProject5565 {
 				}
 			}
 			
-			/*while((b = bis.read()) != -1){
-				sb.append(hCodesMap.get(b));//TODO need to be memory optimized
-				
-			}
-			
-			
-			final int totalBits = sb.length();
-			
-			int pos = 0;
-			String oneByteStr = null;
-			while(pos < totalBits){
-				oneByteStr = sb.substring(pos, pos + Math.min(totalBits - pos, 8));
-				int oneByte = getIntFromBinaryString(oneByteStr, true);
-				bos.write(oneByte);
-				pos += 8;
-			}*/
+
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
