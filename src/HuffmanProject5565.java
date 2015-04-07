@@ -25,31 +25,30 @@ public class HuffmanProject5565 {
 		
 		String filename = "liberty.jpg";
 //		String filename = "test.txt";
-//		String filename = "cf_NJIT_Career_Fair_Directory.pdf";
 //		String filename = "easy.txt";
 //		String filename = "project1 610s15.pdf";
-//		String filename = "111.pdf";
+//		String filename = "long.txt";
 		
-		
-//		String filename = "cf_NJIT_Career_Fair_Directory.pdf";
 		
 		startTime = System.currentTimeMillis();
 		encodeFile(filename);
 		decodeFile(filename + HUF_EXTENSION);
 		
-		
 	}
 
 	private static void encodeFile(String filename){
+		System.out.println("Encoding starts...\n");
 		HashMap<Integer, Integer> freqMap = readFrequenciesFromFile(filename);
 		MinHeap5565 minHeap = new MinHeap5565(freqMap);
 		
+		System.out.println("Generating huffman tree...");
 		HuffmanTree5565 tree = new HuffmanTree5565(minHeap);
 		HashMap<Integer, String> hCodesMap = tree.getHCodeMap();
+		printCurrentTimeSpent();
 		
 		final int BYTE_NEEDED_FOR_HCODE = getByteNeededForHCodes(hCodesMap);
 		
-		System.out.println("~~~~~byte needed for hcode maps " + BYTE_NEEDED_FOR_HCODE);
+		System.out.println("Byte needed for saving hcode maps: " + BYTE_NEEDED_FOR_HCODE);
 
 		BufferedInputStream bis = null;
 		BufferedOutputStream bos = null;
@@ -79,6 +78,7 @@ public class HuffmanProject5565 {
 				final int BYTE_COUNT = (int) Math.ceil(codeBitsCount / 8f);
 				
 				bos.write(codeBitsCount);
+				byteUsed++;
 				if(BYTE_COUNT == 1){
 					//if only has 1 byte then write it immediately
 					bos.write(codeInInt);
@@ -95,16 +95,16 @@ public class HuffmanProject5565 {
 						System.out.println("2+>>>> " + codeInStr + "  " + (codeInInt));*/
 					}
 				}
-				byteUsed++;
+				
 			}
-			System.out.println("~~~~byte used for hcode maps " + byteUsed);
+			System.out.println("Byte used for saving hcode maps: " + byteUsed);
 			
 			/*---------------encode file---------------*/
 			bis = new BufferedInputStream(new FileInputStream(filename));
 			
 			//first write total bit count, which needs 8 bytes. 4 bytes are probably not enough since 32 bits have an upper limit 512M.
 			final long totalBitCount = tree.getTotalBitCount();
-			System.out.println("bitCount written: " + totalBitCount);
+			System.out.println("bit written: " + totalBitCount);
 			for(int i = 0; i < 8; i++){
 				bos.write((int) (totalBitCount >> (7 - i) * 8));
 			}
@@ -144,16 +144,9 @@ public class HuffmanProject5565 {
 							bufferTooShort = true;
 							break;
 						}
-						
-//						if(pos >= len){
-//							sb = new StringBuilder();
-//							bufferTooShort = true;
-//						}
 					}
 				}
 			}
-			
-
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -191,6 +184,7 @@ public class HuffmanProject5565 {
 	}
 	
 	private static void decodeFile(String filename){
+		System.out.println("\n\nDecoding starts...\n");
 		HashMap<Integer, String> hCodesMap = new HashMap<>();
 		String decodedFilename = filename + "." + getOriginalFileExtension(filename);
 		
@@ -204,8 +198,8 @@ public class HuffmanProject5565 {
 			bos = new BufferedOutputStream(new FileOutputStream(decodedFilename));
 			
 			final int byteCountForHCodes = (bis.read() << 8) + bis.read();
-			System.out.println("\n\nDecoding starts...");
-			System.out.println("=== byte count for h code is " + byteCountForHCodes);
+			
+			System.out.println("byte count for h code is " + byteCountForHCodes);
 			
 			int shortestCodeLen = Integer.MAX_VALUE;
 			
@@ -281,7 +275,8 @@ public class HuffmanProject5565 {
 //								System.out.println("bitRead " + bitRead + "  " + strToCompare);
 								if(bitRead / ONE_MEGABYTE != mbRead){
 									mbRead = bitRead / ONE_MEGABYTE;
-									System.out.printf("%d MB/%.2f MB have been read...Time spent: %d\n", mbRead, totalMBOfFile, (System.currentTimeMillis() - startTime));
+									System.out.printf("%d MB/%.2f MB have been decoded... ", mbRead, totalMBOfFile);
+									printCurrentTimeSpent();
 								}
 								
 								startIndex = endIndex;
@@ -325,8 +320,9 @@ public class HuffmanProject5565 {
 				}
 			}
 		}
+		System.out.print("Decoding finished. ");
+		printCurrentTimeSpent();
 		
-		System.out.println("Decoding finished. Time spent: " + ((System.currentTimeMillis() - startTime)));
 	}
 	
 	private static String getOriginalFileExtension(String encodedFilename){
@@ -376,6 +372,7 @@ public class HuffmanProject5565 {
 	}
 	
 	private static HashMap<Integer, Integer> readFrequenciesFromFile(String filename){
+		System.out.println("Reading frequencies from file...");
 		HashMap<Integer, Integer> freqMap = new HashMap<>();
 		BufferedInputStream bis = null;
 		try {
@@ -402,7 +399,11 @@ public class HuffmanProject5565 {
 				}
 			}
 		}
+		printCurrentTimeSpent();
 		return freqMap;
 	}
 	
+	private static void printCurrentTimeSpent(){
+		System.out.println("Time spent until now: " + ((System.currentTimeMillis() - startTime)));
+	}
 }

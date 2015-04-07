@@ -2,7 +2,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-
+/**
+ * 
+ * @author Shengkun Wei
+ *
+ */
 public class HuffmanTree5565 {
 	
 	private final MinHeap5565 minHeap;
