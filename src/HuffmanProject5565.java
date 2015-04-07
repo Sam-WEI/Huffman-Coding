@@ -27,7 +27,7 @@ public class HuffmanProject5565 {
 //		String filename = "test.txt";
 //		String filename = "easy.txt";
 //		String filename = "project1 610s15.pdf";
-//		String filename = "111.pdf";
+//		String filename = "long.txt";
 		
 		
 		startTime = System.currentTimeMillis();
