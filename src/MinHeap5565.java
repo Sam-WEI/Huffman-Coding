@@ -26,7 +26,7 @@ public class MinHeap5565 {
 	}
 	
 	private void buildMinHeapTree(){
-		boolean onceMore = false;
+		/*boolean onceMore = false;
 		do{
 			onceMore = false;
 			for(int childIdx = tree.size() - 1; childIdx >= 1; childIdx--){
@@ -40,8 +40,33 @@ public class MinHeap5565 {
 					onceMore = true;
 				}
 			}	
-		}while(onceMore);
-//		printTree();
+		}while(onceMore);*/
+		
+		for(int prtIdx = (tree.size() - 2) / 2; prtIdx >= 0; prtIdx--){
+			downHeap(prtIdx);
+		}	
+	}
+	
+	private void downHeap(int prtIndex){
+		final int leftCIdx = 2 * prtIndex + 1;
+		final int rightCIdx = 2 * prtIndex + 2;
+		final int leftC = (leftCIdx < tree.size() ? tree.get(leftCIdx).frequency : Integer.MAX_VALUE);
+		final int rightC = (rightCIdx < tree.size() ? tree.get(rightCIdx).frequency : Integer.MAX_VALUE);
+		final int smallest;
+		final int smallestIdx;
+		if(leftC <= rightC){
+			smallest = leftC;
+			smallestIdx = leftCIdx;
+		} else {
+			smallest = rightC;
+			smallestIdx = rightCIdx;
+		}
+		if(tree.get(prtIndex).frequency > smallest){
+			HuffmanNode5565 prt = tree.get(prtIndex);
+			tree.set(prtIndex, tree.get(smallestIdx));
+			tree.set(smallestIdx, prt);
+			downHeap(smallestIdx);
+		}
 	}
 	
 	public void insertIntoMinHeap(HuffmanNode5565 node){
