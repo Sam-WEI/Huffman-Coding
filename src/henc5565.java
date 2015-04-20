@@ -23,9 +23,11 @@ public class henc5565 {
 	
 	
 	public static void main(String[] args) {
-		if (args != null && args.length == 1){
-			String filename = args[0];
-			encodeFile5565(filename);
+		if (args != null && args.length >= 1){
+			for(String s : args){
+				new EncodeThread5565(s).start();
+			}
+			
 		} else {
 			System.out.println("Input error!");
 		}
@@ -47,7 +49,6 @@ public class henc5565 {
 		System.out.println("[" + filename + "] Generating huffman tree...");
 		HuffmanTree5565 tree = new HuffmanTree5565(minHeap);
 		HashMap<Integer, String> hCodesMap = tree.getHCodeMap5565();
-		printCurrentTimeSpent5565();
 		
 		final int BYTE_NEEDED_FOR_HCODE = Toolbox5565.getByteNeededForHCodes5565(hCodesMap);
 		
@@ -151,7 +152,7 @@ public class henc5565 {
 				}
 			}
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			System.out.printf("[ERROR] File %s not found!\n", filename);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
@@ -170,17 +171,24 @@ public class henc5565 {
 				}
 			}
 		}
-		
-		System.out.println("[" + filename + "] Encoding Finished.\n");
+		System.out.println("[" + filename + "] Encoding Finished." + getElapsedTime5565());
+	}
+
+	
+	private static String getElapsedTime5565(){
+		return " Elapsed time: " + ((System.currentTimeMillis() - startTime));
 	}
 	
+	private static class EncodeThread5565 extends Thread {
+		String filename;
+		
+		public EncodeThread5565(String filename) {
+			this.filename = filename;
+		}
 
-	
-
-	
-
-	
-	private static void printCurrentTimeSpent5565(){
-		System.out.println("elapsed time: " + ((System.currentTimeMillis() - startTime)));
+		@Override
+		public void run() {
+			encodeFile5565(filename);
+		}
 	}
 }

@@ -1,5 +1,6 @@
 //Wei, Shengkun   cs610 PP 5565
 
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
@@ -21,16 +22,17 @@ public class hdec5565 {
 	private static long startTime;
 	
 	public static void main(String[] args) {
-		if (args != null && args.length == 1){
-			String filename = args[0];
-			decodeFile5565(filename);
+		if (args != null && args.length >= 1){
+			for(String s : args){
+				new DecodeThread5565(s).start();
+			}
 		} else {
 			System.out.println("Input error!");
 		}
 		
 	}
 	private static void decodeFile5565(String filename){
-		System.out.println("\n\n[" + filename + "] Decoding starts...\n");
+		System.out.println("[" + filename + "] Decoding starts...\n");
 		startTime = System.currentTimeMillis();
 		HashMap<Integer, String> hCodesMap = new HashMap<>();
 		String decodedFilename = filename + "." + Toolbox5565.getOriginalFileExtension5565(filename);
@@ -122,8 +124,7 @@ public class hdec5565 {
 //								System.out.println("bitRead " + bitRead + "  " + strToCompare);
 								if(bitRead / ONE_MEGABYTE != mbRead){
 									mbRead = bitRead / ONE_MEGABYTE;
-									System.out.printf("[" + filename + "] %d MB/%.2f MB have been decoded... ", mbRead, totalMBOfFile);
-									printCurrentTimeSpent5565();
+									System.out.printf("[" + filename + "] %d MB/%.2f MB have been decoded...  %s\n", mbRead, totalMBOfFile,  getElapsedTime5565());
 								}
 								
 								startIndex = endIndex;
@@ -148,7 +149,7 @@ public class hdec5565 {
 			}
 			
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			System.out.printf("[ERROR] File %s not found!\n", filename);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
@@ -168,11 +169,24 @@ public class hdec5565 {
 			}
 		}
 		
-		printCurrentTimeSpent5565();
-		System.out.println("[" + filename + "] Decoding finished.");
+		System.out.println("[" + filename + "] Decoding finished." + getElapsedTime5565());
 	}
 	
-	private static void printCurrentTimeSpent5565(){
-		System.out.println("elapsed time: " + ((System.currentTimeMillis() - startTime)));
+	private static String getElapsedTime5565(){
+		return " Elapsed time: " + ((System.currentTimeMillis() - startTime));
+	}
+	
+	
+	private static class DecodeThread5565 extends Thread {
+		String filename;
+		
+		public DecodeThread5565(String filename) {
+			this.filename = filename;
+		}
+
+		@Override
+		public void run() {
+			decodeFile5565(filename);
+		}
 	}
 }

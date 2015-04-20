@@ -1,8 +1,7 @@
+//Wei, Shengkun   cs610 PP 5565
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map.Entry;
 
-//Wei, Shengkun   cs610 PP 5565
 
 /**
  * 

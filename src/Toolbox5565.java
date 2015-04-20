@@ -89,7 +89,7 @@ public class Toolbox5565 {
 				}
 			}
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			System.out.printf("[ERROR] File %s not found!\n", filename);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
