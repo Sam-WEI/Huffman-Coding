@@ -33,25 +33,25 @@ public class henc5565 {
 	}
 
 	private static void encodeFile5565(String filename){
-		System.out.println("Encoding starts...\n");
+		System.out.println("[" + filename + "] Encoding starts...\n");
 		startTime = System.currentTimeMillis();
 		HashMap<Integer, Integer> freqMap = Toolbox5565.readFrequenciesFromFile5565(filename);
 		
 		if(freqMap.size() == 0){
-			System.out.println("Empty file or file does not exist!");
+			System.out.println("Empty file or file " + filename + " does not exist!");
 			return;
 		}
 		
 		MinHeap5565 minHeap = new MinHeap5565(freqMap);
 		
-		System.out.println("Generating huffman tree...");
+		System.out.println("[" + filename + "] Generating huffman tree...");
 		HuffmanTree5565 tree = new HuffmanTree5565(minHeap);
 		HashMap<Integer, String> hCodesMap = tree.getHCodeMap5565();
 		printCurrentTimeSpent5565();
 		
 		final int BYTE_NEEDED_FOR_HCODE = Toolbox5565.getByteNeededForHCodes5565(hCodesMap);
 		
-		System.out.println("Byte needed for saving hcode maps: " + BYTE_NEEDED_FOR_HCODE);
+//		System.out.println("Byte needed for saving hcode maps: " + BYTE_NEEDED_FOR_HCODE);
 
 		BufferedInputStream bis = null;
 		BufferedOutputStream bos = null;
@@ -100,14 +100,14 @@ public class henc5565 {
 				}
 				
 			}
-			System.out.println("Byte used for saving hcode maps: " + byteUsed);
+//			System.out.println("Byte used for saving hcode maps: " + byteUsed);
 			
 			/*---------------encode file---------------*/
 			bis = new BufferedInputStream(new FileInputStream(filename));
 			
 			//first write total bit count, which needs 8 bytes. 4 bytes are probably not enough since 32 bits have an upper limit 512M.
 			final long totalBitCount = tree.getTotalBitCount5565();
-			System.out.println("bit written: " + totalBitCount);
+			System.out.println("[" + filename + "] bit written: " + totalBitCount);
 			for(int i = 0; i < 8; i++){
 				bos.write((int) (totalBitCount >> (7 - i) * 8));
 			}
@@ -171,7 +171,7 @@ public class henc5565 {
 			}
 		}
 		
-		System.out.println("Encoding Finished.\n");
+		System.out.println("[" + filename + "] Encoding Finished.\n");
 	}
 	
 

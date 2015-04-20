@@ -58,8 +58,7 @@ public class HuffmanTree5565 {
 		
 		generateHuffmanCode5565(parent);
 		
-		printHuffmanNode5565();
-//		printHuffmanCodes();
+//		printHuffmanNode5565();
 	}
 	
 	private void generateHuffmanCode5565(HuffmanNode5565 n) {

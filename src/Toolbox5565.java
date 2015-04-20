@@ -74,7 +74,7 @@ public class Toolbox5565 {
 	}
 	
 	public static HashMap<Integer, Integer> readFrequenciesFromFile5565(String filename){
-		System.out.println("Reading frequencies from file...");
+		System.out.println("[" + filename + "] Reading frequencies from file...");
 		HashMap<Integer, Integer> freqMap = new HashMap<>();
 		BufferedInputStream bis = null;
 		try {

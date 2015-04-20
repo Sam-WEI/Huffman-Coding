@@ -30,7 +30,7 @@ public class hdec5565 {
 		
 	}
 	private static void decodeFile5565(String filename){
-		System.out.println("\n\nDecoding starts...\n");
+		System.out.println("\n\n[" + filename + "] Decoding starts...\n");
 		startTime = System.currentTimeMillis();
 		HashMap<Integer, String> hCodesMap = new HashMap<>();
 		String decodedFilename = filename + "." + Toolbox5565.getOriginalFileExtension5565(filename);
@@ -46,7 +46,7 @@ public class hdec5565 {
 			
 			final int byteCountForHCodes = (bis.read() << 8) + bis.read();
 			
-			System.out.println("byte count for h code is " + byteCountForHCodes);
+//			System.out.println("byte count for h code is " + byteCountForHCodes);
 			
 			int shortestCodeLen = Integer.MAX_VALUE;
 			
@@ -80,14 +80,14 @@ public class hdec5565 {
 				hCodesMap.put(KEY, codeInStr.toString());
 			}
 			
-			System.out.println("just read hcode map: " + hCodesMap);
+//			System.out.println("just read hcode map: " + hCodesMap);
 			
 			
 			//-------------start to read 8 bytes for bit count-------------
 			for(byteRead = 0; byteRead < 8; byteRead++){
 				bitCountOfFile += (bis.read() << (7 - byteRead) * 8);
 			}
-			System.out.println("just read bit count: " + bitCountOfFile);
+//			System.out.println("just read bit count: " + bitCountOfFile);
 			
 			
 			//-------------start to decode file-------------
@@ -122,7 +122,7 @@ public class hdec5565 {
 //								System.out.println("bitRead " + bitRead + "  " + strToCompare);
 								if(bitRead / ONE_MEGABYTE != mbRead){
 									mbRead = bitRead / ONE_MEGABYTE;
-									System.out.printf("%d MB/%.2f MB have been decoded... ", mbRead, totalMBOfFile);
+									System.out.printf("[" + filename + "] %d MB/%.2f MB have been decoded... ", mbRead, totalMBOfFile);
 									printCurrentTimeSpent5565();
 								}
 								
@@ -169,7 +169,7 @@ public class hdec5565 {
 		}
 		
 		printCurrentTimeSpent5565();
-		System.out.println("Decoding finished.");
+		System.out.println("[" + filename + "] Decoding finished.");
 	}
 	
 	private static void printCurrentTimeSpent5565(){
