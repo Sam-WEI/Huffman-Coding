@@ -26,25 +26,33 @@ public class HuffmanTree5565 {
 		
 		HuffmanNode5565 parent = null;
 		
-		while(left != null && right != null){
-			HuffmanNode5565 l = getNodeFromTree(left);
-			HuffmanNode5565 r = getNodeFromTree(right);
-			
+		//when there is only one node
+		if(left != null && right == null){
 			parent = new HuffmanNode5565();
-			parent.left = l;
-			parent.right = r;
+			parent.frequency = left.frequency;
+			parent.left = left;
 			parent.key = -1;
-			parent.frequency = left.frequency + right.frequency;
-			
-			nodes.add(parent);
-			parent.index = nodes.size() - 1;
-			
-			minHeap.insertIntoMinHeap(parent);
-			
-			left = minHeap.extractMin();
-			right = minHeap.extractMin();
-			
+		} else {
+			while(left != null && right != null){
+				HuffmanNode5565 l = getNodeFromTree(left);
+				HuffmanNode5565 r = getNodeFromTree(right);
+				
+				parent = new HuffmanNode5565();
+				parent.left = l;
+				parent.right = r;
+				parent.key = -1;
+				parent.frequency = left.frequency + right.frequency;
+				
+				nodes.add(parent);
+				parent.index = nodes.size() - 1;
+				
+				minHeap.insertIntoMinHeap(parent);
+				
+				left = minHeap.extractMin();
+				right = minHeap.extractMin();
+			}
 		}
+		
 		
 		generateHuffmanCode(parent);
 		

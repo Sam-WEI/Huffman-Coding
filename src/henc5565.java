@@ -34,6 +34,12 @@ public class henc5565 {
 		System.out.println("Encoding starts...\n");
 		startTime = System.currentTimeMillis();
 		HashMap<Integer, Integer> freqMap = Toolbox.readFrequenciesFromFile(filename);
+		
+		if(freqMap.size() == 0){
+			System.out.println("Empty file!");
+			return;
+		}
+		
 		MinHeap5565 minHeap = new MinHeap5565(freqMap);
 		
 		System.out.println("Generating huffman tree...");
@@ -162,6 +168,8 @@ public class henc5565 {
 				}
 			}
 		}
+		
+		System.out.println("Encoding Finished.\n");
 	}
 	
 
@@ -171,6 +179,6 @@ public class henc5565 {
 
 	
 	private static void printCurrentTimeSpent(){
-		System.out.println("Time spent until now: " + ((System.currentTimeMillis() - startTime)));
+		System.out.println("elapsed time: " + ((System.currentTimeMillis() - startTime)));
 	}
 }

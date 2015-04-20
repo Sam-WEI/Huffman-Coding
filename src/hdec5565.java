@@ -161,12 +161,12 @@ public class hdec5565 {
 				}
 			}
 		}
-		System.out.print("Decoding finished. ");
-		printCurrentTimeSpent();
 		
+		printCurrentTimeSpent();
+		System.out.println("Decoding finished.");
 	}
 	
 	private static void printCurrentTimeSpent(){
-		System.out.println("Time spent until now: " + ((System.currentTimeMillis() - startTime)));
+		System.out.println("elapsed time: " + ((System.currentTimeMillis() - startTime)));
 	}
 }
