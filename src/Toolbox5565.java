@@ -1,3 +1,5 @@
+//Wei, Shengkun   cs610 PP 5565
+
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -5,9 +7,13 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-
-public class Toolbox {
-	public static int getByteNeededForHCodes(HashMap<Integer, String> hCodes){
+/**
+ * 
+ * @author Wei
+ *
+ */
+public class Toolbox5565 {
+	public static int getByteNeededForHCodes5565(HashMap<Integer, String> hCodes){
 		int byteCount = 0;
 		String code = null;
 		for(Entry<Integer, String> e : hCodes.entrySet()){
@@ -21,7 +27,7 @@ public class Toolbox {
 		return byteCount;
 	}
 	
-	public static String getOriginalFileExtension(String encodedFilename){
+	public static String getOriginalFileExtension5565(String encodedFilename){
 		String[] ss = encodedFilename.split("\\.");
 		if(ss.length >= 2){
 			return ss[ss.length - 2];
@@ -29,7 +35,7 @@ public class Toolbox {
 		return null;
 	}
 	
-	public static String get8BitsBinaryStrFromInt(int integer){
+	public static String get8BitsBinaryStrFromInt5565(int integer){
 		String tmp = Integer.toBinaryString(integer);
 		StringBuilder sb = new StringBuilder();
 		for(int i = 0; i < 8 - tmp.length(); i++){
@@ -47,7 +53,7 @@ public class Toolbox {
 	 * <br/>If false, binary string 111 will be converted to 00000111, which should be used when writing hcode maps.
 	 * @return
 	 */
-	public static int getIntFromBinaryString(String str, boolean moveBitsToLeft){
+	public static int getIntFromBinaryString5565(String str, boolean moveBitsToLeft){
 		final int len = str.length();
 		
 		int i = 0;
@@ -67,7 +73,7 @@ public class Toolbox {
 		return result;
 	}
 	
-	public static HashMap<Integer, Integer> readFrequenciesFromFile(String filename){
+	public static HashMap<Integer, Integer> readFrequenciesFromFile5565(String filename){
 		System.out.println("Reading frequencies from file...");
 		HashMap<Integer, Integer> freqMap = new HashMap<>();
 		BufferedInputStream bis = null;

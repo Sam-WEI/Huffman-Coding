@@ -1,3 +1,5 @@
+//Wei, Shengkun   cs610 PP 5565
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
@@ -7,7 +9,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-
+/**
+ * 
+ * @author Wei
+ *
+ */
 public class hdec5565 {
 
 	private static final int BUFFER_NUM = 20;
@@ -17,17 +23,17 @@ public class hdec5565 {
 	public static void main(String[] args) {
 		if (args != null && args.length == 1){
 			String filename = args[0];
-			decodeFile(filename);
+			decodeFile5565(filename);
 		} else {
 			System.out.println("Input error!");
 		}
 		
 	}
-	private static void decodeFile(String filename){
+	private static void decodeFile5565(String filename){
 		System.out.println("\n\nDecoding starts...\n");
 		startTime = System.currentTimeMillis();
 		HashMap<Integer, String> hCodesMap = new HashMap<>();
-		String decodedFilename = filename + "." + Toolbox.getOriginalFileExtension(filename);
+		String decodedFilename = filename + "." + Toolbox5565.getOriginalFileExtension5565(filename);
 		
 		long bitCountOfFile = 0;
 		
@@ -97,7 +103,7 @@ public class hdec5565 {
 					b = bis.read();
 
 					if(b != -1){
-						bufferString.append(Toolbox.get8BitsBinaryStrFromInt(b));
+						bufferString.append(Toolbox5565.get8BitsBinaryStrFromInt5565(b));
 					}
 //					System.out.print("reading --- " + bufferString+"|" + bufferString.length() + "\n");
 				} else {
@@ -117,7 +123,7 @@ public class hdec5565 {
 								if(bitRead / ONE_MEGABYTE != mbRead){
 									mbRead = bitRead / ONE_MEGABYTE;
 									System.out.printf("%d MB/%.2f MB have been decoded... ", mbRead, totalMBOfFile);
-									printCurrentTimeSpent();
+									printCurrentTimeSpent5565();
 								}
 								
 								startIndex = endIndex;
@@ -162,11 +168,11 @@ public class hdec5565 {
 			}
 		}
 		
-		printCurrentTimeSpent();
+		printCurrentTimeSpent5565();
 		System.out.println("Decoding finished.");
 	}
 	
-	private static void printCurrentTimeSpent(){
+	private static void printCurrentTimeSpent5565(){
 		System.out.println("elapsed time: " + ((System.currentTimeMillis() - startTime)));
 	}
 }

@@ -2,6 +2,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+//Wei, Shengkun   cs610 PP 5565
+
 /**
  * 
  * @author Shengkun Wei
@@ -20,9 +22,9 @@ public class HuffmanTree5565 {
 		codes = new HashMap<>(minHeap.KEY_COUNT);
 	}
 	
-	private void buildHuffmanTree(){
-		HuffmanNode5565 left = minHeap.extractMin();
-		HuffmanNode5565 right = minHeap.extractMin();
+	private void buildHuffmanTree5565(){
+		HuffmanNode5565 left = minHeap.extractMin5565();
+		HuffmanNode5565 right = minHeap.extractMin5565();
 		
 		HuffmanNode5565 parent = null;
 		
@@ -34,8 +36,8 @@ public class HuffmanTree5565 {
 			parent.key = -1;
 		} else {
 			while(left != null && right != null){
-				HuffmanNode5565 l = getNodeFromTree(left);
-				HuffmanNode5565 r = getNodeFromTree(right);
+				HuffmanNode5565 l = getNodeFromTree5565(left);
+				HuffmanNode5565 r = getNodeFromTree5565(right);
 				
 				parent = new HuffmanNode5565();
 				parent.left = l;
@@ -46,48 +48,48 @@ public class HuffmanTree5565 {
 				nodes.add(parent);
 				parent.index = nodes.size() - 1;
 				
-				minHeap.insertIntoMinHeap(parent);
+				minHeap.insertIntoMinHeap5565(parent);
 				
-				left = minHeap.extractMin();
-				right = minHeap.extractMin();
+				left = minHeap.extractMin5565();
+				right = minHeap.extractMin5565();
 			}
 		}
 		
 		
-		generateHuffmanCode(parent);
+		generateHuffmanCode5565(parent);
 		
-		printHuffmanNode();
+		printHuffmanNode5565();
 //		printHuffmanCodes();
 	}
 	
-	private void generateHuffmanCode(HuffmanNode5565 n) {
+	private void generateHuffmanCode5565(HuffmanNode5565 n) {
 		if (n.left == null && n.right == null) {
 			codes.put(n.key, n.code);
 			bitCount += n.frequency * n.code.length();
 		} else {
 			if (n.left != null) {
 				n.left.code = n.code + "0";
-				generateHuffmanCode(n.left);
+				generateHuffmanCode5565(n.left);
 			}
 			if (n.right != null) {
 				n.right.code = n.code + "1";
-				generateHuffmanCode(n.right);
+				generateHuffmanCode5565(n.right);
 			}
 		}
 	}
 	
-	public HashMap<Integer, String> getHCodeMap(){
+	public HashMap<Integer, String> getHCodeMap5565(){
 		if(codes.isEmpty()){
-			buildHuffmanTree();
+			buildHuffmanTree5565();
 		}
 		return codes;
 	}
 	
-	public long getTotalBitCount(){
+	public long getTotalBitCount5565(){
 		return bitCount;
 	}
 	
-	private void printHuffmanNode(){
+	private void printHuffmanNode5565(){
 		for(HuffmanNode5565 n : nodes){
 			if(n.left == null && n.right == null){
 				System.out.printf("%d : %s [%d]\n", n.key, n.code, n.frequency);
@@ -95,13 +97,7 @@ public class HuffmanTree5565 {
 		}
 	}
 	
-	private void printHuffmanCodes(){
-		for(Entry<Integer, String> entry : codes.entrySet()){
-			System.out.printf("%d : %s\n [%d]", entry.getKey(), entry.getValue());
-		}
-	}
-	
-	private HuffmanNode5565 getNodeFromTree(HuffmanNode5565 n){
+	private HuffmanNode5565 getNodeFromTree5565(HuffmanNode5565 n){
 		if(n.index == -1){
 			nodes.add(n);
 			n.index = nodes.size() - 1;

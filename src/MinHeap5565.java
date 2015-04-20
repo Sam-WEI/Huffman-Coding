@@ -1,3 +1,5 @@
+//Wei, Shengkun   cs610 PP 5565
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -22,10 +24,10 @@ public class MinHeap5565 {
 			tree.add(new HuffmanNode5565(e));
 		}
 		
-		buildMinHeapTree();
+		buildMinHeapTree5565();
 	}
 	
-	private void buildMinHeapTree(){
+	private void buildMinHeapTree5565(){
 		/*boolean onceMore = false;
 		do{
 			onceMore = false;
@@ -43,11 +45,11 @@ public class MinHeap5565 {
 		}while(onceMore);*/
 		
 		for(int prtIdx = (tree.size() - 2) / 2; prtIdx >= 0; prtIdx--){
-			downHeap(prtIdx);
+			downHeap5565(prtIdx);
 		}	
 	}
 	
-	private void downHeap(int prtIndex){
+	private void downHeap5565(int prtIndex){
 		final int leftCIdx = 2 * prtIndex + 1;
 		final int rightCIdx = 2 * prtIndex + 2;
 		final int leftC = (leftCIdx < tree.size() ? tree.get(leftCIdx).frequency : Integer.MAX_VALUE);
@@ -65,29 +67,29 @@ public class MinHeap5565 {
 			HuffmanNode5565 prt = tree.get(prtIndex);
 			tree.set(prtIndex, tree.get(smallestIdx));
 			tree.set(smallestIdx, prt);
-			downHeap(smallestIdx);
+			downHeap5565(smallestIdx);
 		}
 	}
 	
-	public void insertIntoMinHeap(HuffmanNode5565 node){
+	public void insertIntoMinHeap5565(HuffmanNode5565 node){
 		tree.add(node);
-		buildMinHeapTree();
+		buildMinHeapTree5565();
 	}
 	
-	public HuffmanNode5565 extractMin(){
+	public HuffmanNode5565 extractMin5565(){
 		if(!tree.isEmpty()){
 			HuffmanNode5565 result = tree.get(0);
 			HuffmanNode5565 last = tree.remove(tree.size() - 1);
 			if(tree.size() > 0){
 				tree.set(0, last);
 			}
-			buildMinHeapTree();
+			buildMinHeapTree5565();
 			return result;
 		}
 		return null;
 	}
 	
-	private void printTree(){
+	private void printTree5565(){
 		System.out.println("\n------START------");
 		final int size = tree.size();
 		final int levelNum = (int) Math.ceil(Math.log(size));
@@ -118,9 +120,4 @@ public class MinHeap5565 {
 		System.out.println("\n=======END=======\n");
 	}
 	
-	private class MinHeapNode {
-		int key;
-		int value;
-		int huffmanTreeIndex;
-	}
 }

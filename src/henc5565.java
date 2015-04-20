@@ -1,3 +1,5 @@
+//Wei, Shengkun   cs610 PP 5565
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
@@ -23,20 +25,20 @@ public class henc5565 {
 	public static void main(String[] args) {
 		if (args != null && args.length == 1){
 			String filename = args[0];
-			encodeFile(filename);
+			encodeFile5565(filename);
 		} else {
 			System.out.println("Input error!");
 		}
 		
 	}
 
-	private static void encodeFile(String filename){
+	private static void encodeFile5565(String filename){
 		System.out.println("Encoding starts...\n");
 		startTime = System.currentTimeMillis();
-		HashMap<Integer, Integer> freqMap = Toolbox.readFrequenciesFromFile(filename);
+		HashMap<Integer, Integer> freqMap = Toolbox5565.readFrequenciesFromFile5565(filename);
 		
 		if(freqMap.size() == 0){
-			System.out.println("Empty file!");
+			System.out.println("Empty file or file does not exist!");
 			return;
 		}
 		
@@ -44,10 +46,10 @@ public class henc5565 {
 		
 		System.out.println("Generating huffman tree...");
 		HuffmanTree5565 tree = new HuffmanTree5565(minHeap);
-		HashMap<Integer, String> hCodesMap = tree.getHCodeMap();
-		printCurrentTimeSpent();
+		HashMap<Integer, String> hCodesMap = tree.getHCodeMap5565();
+		printCurrentTimeSpent5565();
 		
-		final int BYTE_NEEDED_FOR_HCODE = Toolbox.getByteNeededForHCodes(hCodesMap);
+		final int BYTE_NEEDED_FOR_HCODE = Toolbox5565.getByteNeededForHCodes5565(hCodesMap);
 		
 		System.out.println("Byte needed for saving hcode maps: " + BYTE_NEEDED_FOR_HCODE);
 
@@ -74,7 +76,7 @@ public class henc5565 {
 				byteUsed++;
 				codeInStr = entry.getValue();
 				
-				int codeInInt = Toolbox.getIntFromBinaryString(codeInStr, false);//code in int
+				int codeInInt = Toolbox5565.getIntFromBinaryString5565(codeInStr, false);//code in int
 				int codeBitsCount = codeInStr.length();
 				final int BYTE_COUNT = (int) Math.ceil(codeBitsCount / 8f);
 				
@@ -104,7 +106,7 @@ public class henc5565 {
 			bis = new BufferedInputStream(new FileInputStream(filename));
 			
 			//first write total bit count, which needs 8 bytes. 4 bytes are probably not enough since 32 bits have an upper limit 512M.
-			final long totalBitCount = tree.getTotalBitCount();
+			final long totalBitCount = tree.getTotalBitCount5565();
 			System.out.println("bit written: " + totalBitCount);
 			for(int i = 0; i < 8; i++){
 				bos.write((int) (totalBitCount >> (7 - i) * 8));
@@ -137,7 +139,7 @@ public class henc5565 {
 							oneByteStr = sb.substring(pos, pos + nextLen);
 							bitWritten += nextLen;
 							
-							int oneByte = Toolbox.getIntFromBinaryString(oneByteStr, true);
+							int oneByte = Toolbox5565.getIntFromBinaryString5565(oneByteStr, true);
 							bos.write(oneByte);
 							pos += nextLen;
 						} else {
@@ -178,7 +180,7 @@ public class henc5565 {
 	
 
 	
-	private static void printCurrentTimeSpent(){
+	private static void printCurrentTimeSpent5565(){
 		System.out.println("elapsed time: " + ((System.currentTimeMillis() - startTime)));
 	}
 }
