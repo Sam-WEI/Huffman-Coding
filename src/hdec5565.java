@@ -35,7 +35,8 @@ public class hdec5565 {
 		System.out.println("[" + filename + "] Decoding starts...\n");
 		startTime = System.currentTimeMillis();
 		HashMap<Integer, String> hCodesMap = new HashMap<>();
-		String decodedFilename = filename + "." + Toolbox5565.getOriginalFileExtension5565(filename);
+//		String decodedFilename = filename + "." + Toolbox5565.getOriginalFileExtension5565(filename);
+		String decodedFilename = filename.substring(0, filename.length() - 4);
 		
 		long bitCountOfFile = 0;
 		
