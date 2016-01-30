@@ -15,7 +15,7 @@ import java.util.Map.Entry;
  * @author Wei
  *
  */
-public class hdec5565 {
+public class HDecode {
 
 	private static final int BUFFER_NUM = 20;
 	private static final int ONE_MEGABYTE = 1 * 1024 * 1024 * 8;//in bit
@@ -35,7 +35,7 @@ public class hdec5565 {
 		System.out.println("[" + filename + "] Decoding starts...\n");
 		startTime = System.currentTimeMillis();
 		HashMap<Integer, String> hCodesMap = new HashMap<>();
-//		String decodedFilename = filename + "." + Toolbox5565.getOriginalFileExtension5565(filename);
+//		String decodedFilename = filename + "." + Toolbox.getOriginalFileExtension5565(filename);
 		String decodedFilename = filename.substring(0, filename.length() - 4);
 		
 		long bitCountOfFile = 0;
@@ -106,7 +106,7 @@ public class hdec5565 {
 					b = bis.read();
 
 					if(b != -1){
-						bufferString.append(Toolbox5565.get8BitsBinaryStrFromInt5565(b));
+						bufferString.append(Toolbox.get8BitsBinaryStrFromInt5565(b));
 					}
 //					System.out.print("reading --- " + bufferString+"|" + bufferString.length() + "\n");
 				} else {

@@ -10,18 +10,18 @@ import java.util.Map.Entry;
  * @author Shengkun Wei
  *
  */
-public class MinHeap5565 {
+public class MinHeap {
 	
 	private HashMap<Integer, Integer> freqMap;
-	private ArrayList<HuffmanNode5565> tree;
+	private ArrayList<HuffmanNode> tree;
 	final int KEY_COUNT;
 	
-	public MinHeap5565(HashMap<Integer, Integer> freqMap) {
+	public MinHeap(HashMap<Integer, Integer> freqMap) {
 		this.freqMap = freqMap;
 		KEY_COUNT = freqMap.size();
 		tree = new ArrayList<>(KEY_COUNT);
 		for(Entry<Integer, Integer> e : freqMap.entrySet()){
-			tree.add(new HuffmanNode5565(e));
+			tree.add(new HuffmanNode(e));
 		}
 		
 		buildMinHeapTree5565();
@@ -34,8 +34,8 @@ public class MinHeap5565 {
 			for(int childIdx = tree.size() - 1; childIdx >= 1; childIdx--){
 				
 				int prtIdx = (childIdx - 1) / 2;//same as Math.floor()
-				HuffmanNode5565 childEntry = tree.get(childIdx);
-				HuffmanNode5565 prtEntry = tree.get(prtIdx);
+				HuffmanNode childEntry = tree.get(childIdx);
+				HuffmanNode prtEntry = tree.get(prtIdx);
 				if(childEntry.frequency < prtEntry.frequency){
 					tree.set(childIdx, prtEntry);
 					tree.set(prtIdx, childEntry);
@@ -64,22 +64,22 @@ public class MinHeap5565 {
 			smallestIdx = rightCIdx;
 		}
 		if(tree.get(prtIndex).frequency > smallest){
-			HuffmanNode5565 prt = tree.get(prtIndex);
+			HuffmanNode prt = tree.get(prtIndex);
 			tree.set(prtIndex, tree.get(smallestIdx));
 			tree.set(smallestIdx, prt);
 			downHeap5565(smallestIdx);
 		}
 	}
 	
-	public void insertIntoMinHeap5565(HuffmanNode5565 node){
+	public void insertIntoMinHeap5565(HuffmanNode node){
 		tree.add(node);
 		buildMinHeapTree5565();
 	}
 	
-	public HuffmanNode5565 extractMin5565(){
+	public HuffmanNode extractMin5565(){
 		if(!tree.isEmpty()){
-			HuffmanNode5565 result = tree.get(0);
-			HuffmanNode5565 last = tree.remove(tree.size() - 1);
+			HuffmanNode result = tree.get(0);
+			HuffmanNode last = tree.remove(tree.size() - 1);
 			if(tree.size() > 0){
 				tree.set(0, last);
 			}

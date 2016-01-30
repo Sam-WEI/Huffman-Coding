@@ -14,7 +14,7 @@ import java.util.Map.Entry;
  * @author Shengkun Wei
  *
  */
-public class henc5565 {
+public class HEncode {
 	
 	private static final String HUF_EXTENSION = ".huf";
 	static final int KEY_BYTE_NUM = 2;
@@ -37,20 +37,20 @@ public class henc5565 {
 	private static void encodeFile5565(String filename){
 		System.out.println("[" + filename + "] Encoding starts...\n");
 		startTime = System.currentTimeMillis();
-		HashMap<Integer, Integer> freqMap = Toolbox5565.readFrequenciesFromFile5565(filename);
+		HashMap<Integer, Integer> freqMap = Toolbox.readFrequenciesFromFile5565(filename);
 		
 		if(freqMap.size() == 0){
 			System.out.println("Empty file or file " + filename + " does not exist!");
 			return;
 		}
 		
-		MinHeap5565 minHeap = new MinHeap5565(freqMap);
+		MinHeap minHeap = new MinHeap(freqMap);
 		
 		System.out.println("[" + filename + "] Generating huffman tree...");
-		HuffmanTree5565 tree = new HuffmanTree5565(minHeap);
+		HuffmanTree tree = new HuffmanTree(minHeap);
 		HashMap<Integer, String> hCodesMap = tree.getHCodeMap5565();
 		
-		final int BYTE_NEEDED_FOR_HCODE = Toolbox5565.getByteNeededForHCodes5565(hCodesMap);
+		final int BYTE_NEEDED_FOR_HCODE = Toolbox.getByteNeededForHCodes5565(hCodesMap);
 		
 //		System.out.println("Byte needed for saving hcode maps: " + BYTE_NEEDED_FOR_HCODE);
 
@@ -77,7 +77,7 @@ public class henc5565 {
 				byteUsed++;
 				codeInStr = entry.getValue();
 				
-				int codeInInt = Toolbox5565.getIntFromBinaryString5565(codeInStr, false);//code in int
+				int codeInInt = Toolbox.getIntFromBinaryString5565(codeInStr, false);//code in int
 				int codeBitsCount = codeInStr.length();
 				final int BYTE_COUNT = (int) Math.ceil(codeBitsCount / 8f);
 				
@@ -140,7 +140,7 @@ public class henc5565 {
 							oneByteStr = sb.substring(pos, pos + nextLen);
 							bitWritten += nextLen;
 							
-							int oneByte = Toolbox5565.getIntFromBinaryString5565(oneByteStr, true);
+							int oneByte = Toolbox.getIntFromBinaryString5565(oneByteStr, true);
 							bos.write(oneByte);
 							pos += nextLen;
 						} else {

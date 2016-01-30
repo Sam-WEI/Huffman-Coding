@@ -8,37 +8,37 @@ import java.util.HashMap;
  * @author Shengkun Wei
  *
  */
-public class HuffmanTree5565 {
+public class HuffmanTree {
 	
-	private final MinHeap5565 minHeap;
-	private ArrayList<HuffmanNode5565> nodes;
+	private final MinHeap minHeap;
+	private ArrayList<HuffmanNode> nodes;
 	private HashMap<Integer, String> codes;
 	private long bitCount;//the total bit count. sum of key_bit * frequency
 	
-	public HuffmanTree5565(MinHeap5565 minHeap){
+	public HuffmanTree(MinHeap minHeap){
 		this.minHeap = minHeap;
 		nodes = new ArrayList<>();
 		codes = new HashMap<>(minHeap.KEY_COUNT);
 	}
 	
 	private void buildHuffmanTree5565(){
-		HuffmanNode5565 left = minHeap.extractMin5565();
-		HuffmanNode5565 right = minHeap.extractMin5565();
+		HuffmanNode left = minHeap.extractMin5565();
+		HuffmanNode right = minHeap.extractMin5565();
 		
-		HuffmanNode5565 parent = null;
+		HuffmanNode parent = null;
 		
 		//when there is only one node
 		if(left != null && right == null){
-			parent = new HuffmanNode5565();
+			parent = new HuffmanNode();
 			parent.frequency = left.frequency;
 			parent.left = left;
 			parent.key = -1;
 		} else {
 			while(left != null && right != null){
-				HuffmanNode5565 l = getNodeFromTree5565(left);
-				HuffmanNode5565 r = getNodeFromTree5565(right);
+				HuffmanNode l = getNodeFromTree5565(left);
+				HuffmanNode r = getNodeFromTree5565(right);
 				
-				parent = new HuffmanNode5565();
+				parent = new HuffmanNode();
 				parent.left = l;
 				parent.right = r;
 				parent.key = -1;
@@ -60,7 +60,7 @@ public class HuffmanTree5565 {
 //		printHuffmanNode5565();
 	}
 	
-	private void generateHuffmanCode5565(HuffmanNode5565 n) {
+	private void generateHuffmanCode5565(HuffmanNode n) {
 		if (n.left == null && n.right == null) {
 			codes.put(n.key, n.code);
 			bitCount += n.frequency * n.code.length();
@@ -88,14 +88,14 @@ public class HuffmanTree5565 {
 	}
 	
 	private void printHuffmanNode5565(){
-		for(HuffmanNode5565 n : nodes){
+		for(HuffmanNode n : nodes){
 			if(n.left == null && n.right == null){
 				System.out.printf("%d : %s [%d]\n", n.key, n.code, n.frequency);
 			}
 		}
 	}
 	
-	private HuffmanNode5565 getNodeFromTree5565(HuffmanNode5565 n){
+	private HuffmanNode getNodeFromTree5565(HuffmanNode n){
 		if(n.index == -1){
 			nodes.add(n);
 			n.index = nodes.size() - 1;

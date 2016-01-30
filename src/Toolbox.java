@@ -12,7 +12,7 @@ import java.util.Map.Entry;
  * @author Wei
  *
  */
-public class Toolbox5565 {
+public class Toolbox {
 	public static int getByteNeededForHCodes5565(HashMap<Integer, String> hCodes){
 		int byteCount = 0;
 		String code = null;
