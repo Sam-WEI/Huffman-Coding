@@ -12,4 +12,9 @@ There is no upper limit of file size.
   __After compression:__   
   `New_Jersey_Driver_Manual.pdf.huf` 3.93 MB (4,121,965 bytes)   
   Compression ratio: 90%  
+- `longtext.txt` 502 KB (514,353 bytes)   
+  __After compression:__   
+  `longtext.txt.huf` 343 KB (351,641 bytes)   
+  Compression ratio: 68%  
 - 
+
