@@ -1,6 +1,6 @@
 # Huffman Encoder and Decoder
 
-This program can compress files using Huffman Coding Algorithm and unzip compressed files.
+This program can compress files using `Huffman Coding Algorithm` and unzip compressed files.
 
 Multiple files can be encoding and decoding simultaneously in seperate threads.
 
