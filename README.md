@@ -9,10 +9,9 @@ There is no upper limit of file size.
 ## Result
 
 - New_Jersey_Driver_Manual.pdf  
-  4.36 MB (4,577,231 bytes)
-  
-  After compression:
-  New_Jersey_Driver_Manual.pdf.huf
-  3.93 MB (4,121,965 bytes)
-  Compression ratio: 90%
+  4.36 MB (4,577,231 bytes)  
+  After compression:  
+  New_Jersey_Driver_Manual.pdf.huf  
+  3.93 MB (4,121,965 bytes)  
+  Compression ratio: 90%  
 - 
