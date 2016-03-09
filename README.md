@@ -6,7 +6,7 @@ Multiple files can be encoding and decoding simultaneously in seperate threads.
 
 There is no upper limit of file size.
 
-## Result
+## Results
 
 - `New_Jersey_Driver_Manual.pdf` 4.36 MB (4,577,231 bytes)   
   __After compression:__   
